@@ -24,12 +24,17 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/admin', function () {
+    return Inertia::render('Admin/Index');
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
+        // auth()->user()->assignRole('admin');
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
