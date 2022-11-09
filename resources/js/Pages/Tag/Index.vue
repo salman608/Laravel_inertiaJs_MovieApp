@@ -73,7 +73,8 @@
                                         <td class="px-4 py-3 text-sm border flex justify-around">
                                             <Link :href="route('admin.tags.edit', tag.id)"
                                                 class="bg-green-500 hover:bg-green-700 text-white px-4 py-2">Edit</Link>
-                                            <Link class=" px-4 py-2 bg-red-500 hover:bg-red-700
+                                            <Link :href="route('admin.tags.destroy', tag.id)" method="delete"
+                                                as="button" type="button" class=" px-4 py-2 bg-red-500 hover:bg-red-700
                                                 text-white">Delete</Link>
                                         </td>
                                     </tr>

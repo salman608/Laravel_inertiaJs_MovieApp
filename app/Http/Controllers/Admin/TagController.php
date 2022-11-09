@@ -40,7 +40,7 @@ class TagController extends Controller
             'tag_name' => Request::input('tagName'),
             'slug'    => Str::slug(Request::input('tagName')),
         ]);
-        return redirect()->route('admin.tags.index');
+        return redirect()->route('admin.tags.index')->with('flash.banner', 'Tag Insert Sucessfully');
     }
 
     public function edit(Tag $tag)
@@ -60,6 +60,13 @@ class TagController extends Controller
             'tag_name' => Request::input('tagName'),
             'slug' => Str::slug(Request::input('tagName')),
         ]);
-        return Redirect::route('admin.tags.index');
+        return Redirect::route('admin.tags.index')->with('flash.banner', 'Tag Update Sucessfully');
+    }
+
+
+    public function destroy(Tag $tag)
+    {
+        $tag->delete();
+        return Redirect::route('admin.tags.index')->with('flash.banner', 'Tag delete Sucessfully');
     }
 }
