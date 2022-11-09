@@ -121,7 +121,7 @@ const props = defineProps({
 });
 
 const search = ref(props.filters.search);
-const perPage = ref(5);
+const perPage = ref(props.filters.perPage);
 watch(search, (value) => {
     Inertia.get('/admin/tags', { search: value, perPage: perPage.value },
         {

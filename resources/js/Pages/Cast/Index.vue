@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
     <admin-layout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -10,8 +10,22 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <section class="container mx-auto p-6 font-mono">
                     <div class="w-full flex mb-4 p-2 justify-end">
-                        <Link :href="route('admin.casts.create')"
-                            class="px-4 py-2 bg-green-500 hover:bg-green-700 text-white">Create Cast</Link>
+                        <form class="flex space-x-4 shadow bg-white rounded-md m-2 p-2">
+                            <div class="p-1 flex items-center">
+                                <label for="tmdb_id" class="block text-sm font-medium text-gray-700 mr-4">Cast Tmdb
+                                    Id</label>
+                                <div class="relative rounded-md shadow-sm">
+                                    <input v-model="castTMDBId" id="tmdb_id" name="tmdb_id"
+                                        class="px-3 py-2 border border-gray-300 rounded" placeholder="Cast ID" />
+                                </div>
+                            </div>
+                            <div class="p-1">
+                                <button type="button" @click="generateCast"
+                                    class="inline-flex items-center justify-center py-2 px-4 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-green-700 transition duration-150 ease-in-out disabled:opacity-50">
+                                    <span>Generate</span>
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     <div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg">
@@ -35,7 +49,7 @@
                                         </div>
                                     </div>
                                     <div class="flex">
-                                        <select v-model="perPage" @change="getTags"
+                                        <select v-model="perPage" @change="getCasts"
                                             class="px-4 py-3 w-full rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm">
                                             <option value="5">5 Per Page</option>
                                             <option value="10">10 Per Page</option>
@@ -60,23 +74,25 @@
                                 </thead>
                                 <tbody class="bg-white">
 
-                                    <tr v-for="tag in casts.data" :key="cast.id" class="text-gray-700">
-                                    
+                                    <tr v-for="cast in casts.data" :key="cast.id" class="text-gray-700">
+
                                         <td class="px-4 py-3 border">
                                             {{ cast.name }}
                                         </td>
                                         <td class="px-4 py-3 text-ms font-semibold border">
                                             {{ cast.slug }}
                                         </td>
+
                                         <td class="px-4 py-3 text-ms font-semibold border">
                                             {{ cast.poster_path }}
                                         </td>
 
                                         <td class="px-4 py-3 text-sm border flex justify-around">
-                                            <button wire:click="showEditModal()"
-                                                class="bg-green-500 hover:bg-green-700 text-white px-4 py-2">Edit</button>
-                                            <button class=" px-4 py-2 bg-red-500 hover:bg-red-700
-                                                text-white">Delete</button>
+                                            <Link :href="route('admin.casts.edit', cast.id)"
+                                                class="bg-green-500 hover:bg-green-700 text-white px-4 py-2">Edit</Link>
+                                            <Link :href="route('admin.casts.destroy', cast.id)" method="delete"
+                                                as="button" type="button" class=" px-4 py-2 bg-red-500 hover:bg-red-700
+                                                text-white">Delete</Link>
                                         </td>
                                     </tr>
 
@@ -86,7 +102,7 @@
                             <div class="m-2 p-2">
                                 <div class="flex">
 
-                                    <template v-for="(link, key) in tags.links" :key="key">
+                                    <template v-for="(link, key) in casts.links" :key="key">
                                         <div v-if="link.url === null" :key="key"
                                             class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded"
                                             v-html="link.label" />
@@ -117,28 +133,41 @@ import { Inertia } from '@inertiajs/inertia';
 
 
 const props = defineProps({
-    tags: Object,
+    casts: Object,
     filters: Object
 });
 
 const search = ref(props.filters.search);
 const perPage = ref(5);
+const castTMDBId = ref('');
+
 watch(search, (value) => {
-    Inertia.get('/admin/tags', { search: value, perPage: perPage.value },
+    Inertia.get('/admin/casts', { search: value, perPage: perPage.value },
         {
             preserveState: true, replace: true
         },);
 });
 
-function getTags() {
-    Inertia.get('/admin/tags', { perPage: perPage.value, search: value },
+function getCasts() {
+
+    Inertia.get('/admin/casts', { perPage: perPage.value, search: value },
         {
             preserveState: true,
             replace: true
-        });
+        }
+    );
+}
+
+function generateCast() {
+    // console.log('dd');
+    Inertia.post('/admin/casts', { castTMDBId: castTMDBId.value },
+        {
+            onFinish: () => (castTMDBId.value = "")
+        },
+    );
 }
 </script>
 
 <style lang="scss" scoped>
 
-</style> -->
+</style>
